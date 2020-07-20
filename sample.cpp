@@ -5,6 +5,8 @@
 #include <queue>
 #include <deque>
 #include <cmath>
+#include <algorithm>
+
 using namespace std;
 
 typedef long long int ll;

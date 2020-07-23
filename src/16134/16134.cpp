@@ -7,16 +7,8 @@ using namespace std;
 
 typedef unsigned long long int ll;
 
-int fact_dp[MAX_N] = {1,1,};
-ll fact(int n){
-    if(fact_dp[n]!=0) return fact_dp[n];
-    fact_dp[n]=(n*fact(n-1)) % P;
-    return fact_dp[n];
-}
-
 ll pow(ll a,int n){
-    if(n==2) return (a*a) % P;
-    if(n==3) return (((a*a)%P)*a)%P;
+    if(n==1) return a;
     else {
         ll half = pow(a,n/2) % P;
         ll sq = (half*half) % P;
@@ -34,13 +26,14 @@ ll inv(int n){
 int main(){
     int N,R,i;
     cin >> N >> R;
-    for(i=2;i<N;i++) fact(i);
-
-    ll fact_n = fact(N);
-    ll fact_r = fact(R);
-    ll fact_n_r = fact(N-R);
-    ll reverse = inv((fact_r * fact_n_r)%P);
-
-    ll result = (fact_n * reverse) % P;
+    R = max(R,N-R);
+    ll num = 1;
+    ll deno = 1;
+    for(i=1;i<N-R+1;i++){
+        num = (num*(N-i+1))%P;
+        deno = (deno*i)%P;
+    }
+    ll inverse = inv(deno);
+    ll result = (num * inverse) % P;
     cout << result << "\n";
 }

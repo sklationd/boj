@@ -27,19 +27,21 @@ int main(){
     int N,M,i,j;
     N=readInt();
 
-    // believer
-    vector<int> bel(N+1,-1);
+    // time
+    vector<int> time(N+1,-1);
     // network
-    vector<vector<pair<int,bool>>> net(N+1);
-    // infector
-    queue<int> infect;
+    vector<vector<int>> net(N+1);
+    // number of timeiever in neighborhood
+    vector<int> nb(N+1,0);
+    // BFS Q
+    queue<int> Q;
 
     for(i=1;i<=N;i++){
         while(1){
             int neighbor;
             neighbor = readInt();
             if(neighbor == 0) break;
-            net[i].push_back(make_pair(neighbor,false));
+            net[i].push_back(neighbor);
         }
     }
 
@@ -49,50 +51,33 @@ int main(){
     for(i=0;i<M;i++){
         int temp;
         temp = readInt();
-        bel[temp] = t;
-        infect.push(temp);
+        time[temp] = t;
+        Q.push(temp);
     }
 
-    // number of believer in neighborhood of N
-    vector<int> nb(N+1,0);
+    // number of timeiever in neighborhood of N
 
-    while(1){
+    while(!Q.empty()){
         t++;
         
         // if new count is 0, terminate.
-        int new_count = 0;
-        int s = infect.size();
+        int s = Q.size();
         for(i=0;i<s;i++){
-            int host = infect.front();
-            infect.pop();
-            int count = 0;
-
+            int host = Q.front();Q.pop();
             for(j=0;j<net[host].size();j++){
-                int candidate = net[host][j].first;
-                if(bel[candidate]==-1 && !net[host][j].second){
-                    nb[candidate]++;
-                    net[host][j].second = true;
-                    if(nb[candidate]>=(net[candidate].size()+1)/2){
-                        infect.push(candidate);
-                        new_count++;
-                        count++;
-                        bel[candidate] = t;
+                int nbh = net[host][j];
+                if(time[nbh]==-1){
+                    nb[nbh]++;
+                    if(nb[nbh]*2 >= net[nbh].size()){
+                        Q.push(nbh);
+                        time[nbh] = t;
                     }
-                } else {
-                    count++;
                 }
             }
-            
-            if(count < net[host].size()){
-                infect.push(host);
-            }
         }
-
-        if(new_count == 0)
-            break;
     }
 
     for(i=1;i<=N;i++){
-        cout << bel[i] << " ";
+        cout << time[i] << " ";
     }
 }
